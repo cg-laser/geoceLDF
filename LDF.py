@@ -129,15 +129,15 @@ def LDF_geo_ce(x, y, Erad, dxmax, zenith, azimuth, core=np.array([0, 0]),
     Egeo = Erad / (1 + (a / sinalpha) ** 2)
     Ece = Erad - Egeo
 
-    x -= core[0]
-    y -= core[1]
+    x2 = x - core[0]
+    y2 = y - core[1]
 
     # get energy fluence of geomagnetic and charge-excess component
-    fce = LDF_ce_dxmax(x, y, dxmax, Ece, obsheight=obsheight)
-    fgeo = LDF_geo_dxmax(x, y, dxmax, Egeo, obsheight=obsheight)
+    fce = LDF_ce_dxmax(x2, y2, dxmax, Ece, obsheight=obsheight)
+    fgeo = LDF_geo_dxmax(x2, y2, dxmax, Egeo, obsheight=obsheight)
 
     # combine the two emission processes depending on the position relative to the shower axis
-    az = np.arctan2(y, x)
+    az = np.arctan2(y2, x2)
     fvB = (fgeo ** 0.5 + fce ** 0.5 * np.cos(az)) ** 2
     fvvB = fce * np.sin(az) ** 2
     f = fvB + fvvB
@@ -443,12 +443,12 @@ def get_rcut_ce(k, dxmax):
 
 def get_b_ce(k, dxmax):
     if k < 1e-5:
-        return 141.82811531 - 0.23893423 * dxmax
+        return 146.92691815 - 0.25112664 * dxmax
     else:
-        return 58.99640913 + 0.32596894 * dxmax
+        return 55.55667917 + 0.32392104 * dxmax
 
 
-def get_k_ce(dxmax, a=3.74875934e+02, b=-3.89726496e+00, c=3.33172563e+00, d=2.86941234e-03):
+def get_k_ce(dxmax, a=5.80505613e+02, b=-1.76588481e+00, c=3.12029983e+00, d=3.73038601e-03):
     t = dxmax - a
     res = b + (c - b) / (1 + np.exp(-d * t))
     if not (isinstance(res, np.float64)):
